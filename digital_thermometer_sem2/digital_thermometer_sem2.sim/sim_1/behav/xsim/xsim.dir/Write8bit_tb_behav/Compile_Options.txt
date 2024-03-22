@@ -1,1 +1,1 @@
--wto "110fba758242416dadcbdddc186a19d3" --incr --debug "typical" --relax --mt "2" -L "xil_defaultlib" -L "secureip" --snapshot "Write8bit_tb_behav" "xil_defaultlib.Write8bit_tb" -log "elaborate.log" 
+--incr --debug "typical" --relax --mt "8" -L "xil_defaultlib" -L "secureip" --snapshot "Write8bit_tb_behav" "xil_defaultlib.Write8bit_tb" -log "elaborate.log" 

@@ -1,7 +1,7 @@
-Vivado Simulator 2020.2
-Copyright 1986-1999, 2001-2020 Xilinx, Inc. All Rights Reserved.
-Running: C:/Xilinx/Vivado/2020.2/bin/unwrapped/win64.o/xelab.exe -wto 110fba758242416dadcbdddc186a19d3 --incr --debug typical --relax --mt 2 -L xil_defaultlib -L secureip --snapshot Write8bit_tb_behav xil_defaultlib.Write8bit_tb -log elaborate.log 
-Using 2 slave threads.
+Vivado Simulator v2022.1
+Copyright 1986-1999, 2001-2022 Xilinx, Inc. All Rights Reserved.
+Running: /tools/Xilinx/Vivado/2022.1/bin/unwrapped/lnx64.o/xelab --incr --debug typical --relax --mt 8 -L xil_defaultlib -L secureip --snapshot Write8bit_tb_behav xil_defaultlib.Write8bit_tb -log elaborate.log 
+Using 8 slave threads.
 Starting static elaboration
 Completed static elaboration
 Starting simulation data flow analysis
@@ -15,6 +15,8 @@ Compiling architecture behavioral of entity xil_defaultlib.Writebit [writebit_de
 Compiling architecture behavioral of entity xil_defaultlib.Write_1bit [write_1bit_default]
 Compiling architecture behavioral of entity xil_defaultlib.Write_0bit [write_0bit_default]
 Compiling architecture behavioral of entity xil_defaultlib.Timer_1us [timer_1us_default]
+Compiling architecture behavioral of entity xil_defaultlib.Timer_60us [timer_60us_default]
+Compiling architecture orlogic of entity xil_defaultlib.orGate [orgate_default]
 Compiling architecture structural of entity xil_defaultlib.Write8bit [write8bit_default]
 Compiling architecture behavioral of entity xil_defaultlib.write8bit_tb
 Built simulation snapshot Write8bit_tb_behav
