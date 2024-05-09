@@ -1,0 +1,15 @@
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2022.1 (lin64) Build 3526262 Mon Apr 18 15:47:01 MDT 2022
+| Date         : Thu May  9 23:27:18 2024
+| Host         : saker-V1-10 running 64-bit Ubuntu 23.10
+| Command      : report_bus_skew -warn_on_violation -file Master_Protocol_bus_skew_routed.rpt -pb Master_Protocol_bus_skew_routed.pb -rpx Master_Protocol_bus_skew_routed.rpx
+| Design       : Master_Protocol
+| Device       : 7a100t-csg324
+| Speed File   : -1  PRODUCTION 1.23 2018-06-13
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Bus Skew Report
+
+No bus skew constraints
+

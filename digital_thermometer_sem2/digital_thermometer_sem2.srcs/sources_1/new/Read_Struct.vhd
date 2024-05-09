@@ -36,6 +36,7 @@ entity Read_Struct is
         clk: in std_logic;
         rst: in std_logic;
         ONE_wire_read : in std_logic;
+        ONE_wire_write : out std_logic;
         start_reading : in std_logic;
         timer_15us_done : in std_logic;
         timer_1us_done : in std_logic;
@@ -43,9 +44,8 @@ entity Read_Struct is
         en_timer_1us: out std_logic;
         en_timer_15us: out std_logic;
         en_timer_60us: out std_logic;
-        write_bit : out std_logic;
-        write_mem : out std_logic
-  
+        mem_value : out std_logic_vector (7 downto 0);
+        done_reading : out std_logic
    );
 end Read_Struct;
 
@@ -59,17 +59,64 @@ component Read1bit is
         timer_15us_done : in std_logic;
         timer_1us_done : in std_logic;
         timer_60us_done : in std_logic;
+        pulldown_out: out std_logic;
         en_timer_1us: out std_logic;
         en_timer_15us: out std_logic;
         en_timer_60us: out std_logic;
         write_bit : out std_logic;
-        write_mem : out std_logic       
+        write_mem : out std_logic ;
+        done_reading : out std_logic      
     );
     end component;
     
     -- memory module here 
+    component Temp_Memory is
+
+    Port ( 
+           clk      : in STD_LOGIC;
+           rst      : in STD_LOGIC;
+           mem_wr   : in STD_LOGIC;
+           val      : in STD_LOGIC;
+           Temp     : out STD_LOGIC_VECTOR (7 downto 0);
+           d_read   : in std_logic);
+end component;
+    
+    signal sig_write_bit : std_logic;
+    signal sig_val: std_logic;
+    signal sig_d_read: std_logic;
     
 begin
-
+done_reading <= sig_d_read;
+read8_bitval : read1bit
+    port map (
+        clk             => clk,
+        rst             => rst,
+        Read_wire       => ONE_wire_read,
+        start_reading   => start_reading,
+        timer_15us_done => timer_15us_done,
+        timer_1us_done  => timer_1us_done,
+        timer_60us_done => timer_60us_done,
+        en_timer_1us    => en_timer_1us,
+        en_timer_15us   => en_timer_15us,
+        en_timer_60us   => en_timer_60us,
+        write_bit       => sig_val,
+        write_mem       =>  sig_write_bit,
+        pulldown_out => ONE_wire_write,
+        done_reading => sig_d_read
+        
+        );
+        
+        
+    MEM_data: Temp_Memory 
+        port map (
+            clk     =>  clk, 
+            rst     =>    rst,
+            mem_wr  =>  sig_write_bit,
+            val     => sig_val,
+            Temp    => mem_value,
+            d_read  => sig_d_read
+        
+        );
+    
 
 end Structural;

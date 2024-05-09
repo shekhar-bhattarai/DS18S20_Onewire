@@ -40,7 +40,9 @@ entity Timers is
     done_timer_1us    : out std_logic;
     done_timer_60us   : out std_logic;
     start_timer_15us  : in std_logic;
-    done_timer_15us   : out std_logic
+    done_timer_15us   : out std_logic;
+    start_timer_800ms  : in std_logic;
+    done_timer_800ms    : out std_logic
   
   );
   
@@ -77,6 +79,17 @@ component Timer_15us is
         );
 end component;
 
+component Timer_800ms is
+    
+    Port (
+        rst             : in STD_LOGIC;
+        clk             : in STD_LOGIC;
+        timer800_start    : in STD_LOGIC;
+        timer800_done     : out STD_LOGIC
+        );
+ end component;
+
+
 begin
 oneus_timer: Timer_1us 
     port map (
@@ -89,18 +102,26 @@ oneus_timer: Timer_1us
     
 fifteenus_timer: Timer_15us 
     port map (
-    clk          => clk,
-    rst          => rst,
+    clk           => clk,
+    rst           => rst,
     timer15_start => start_timer_15us,
     timer15_done  => done_timer_15us
     
     );
 sixtyus_timer: Timer_60us 
     port map (
-    clk          => clk,
-    rst          => rst,
+    clk           => clk,
+    rst           => rst,
     timer60_start => start_timer_60us,
     timer60_done  => done_timer_60us
+    
+    );
+    eighthundred_ms_timer: Timer_800ms 
+    port map (
+    clk           => clk,
+    rst           => rst,
+    timer800_start => start_timer_800ms,
+    timer800_done  => done_timer_800ms
     
     );
 end Structural;

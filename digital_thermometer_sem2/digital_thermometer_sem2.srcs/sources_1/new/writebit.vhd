@@ -71,7 +71,7 @@ begin
             when START_S =>
                 next_state <= TRANSMIT_DATA;  -- Transition to TRANSMIT_DATA state
             when WAIT_1US => 
-                if(Oneus_flag = '1') then 
+                if(oneus_flag = '1') then 
                     next_state <= TRANSMIT_DATA;
                 end if;
             when TRANSMIT_DATA =>
@@ -85,13 +85,13 @@ begin
                     next_state <= DONE_S;  -- Transition to DONE state after transmitting all 8 bits
                 end if;
                 when WRITE_0 =>
-                    if(done_writing0 = '1') then 
+                    if(done_60us = '1') then   --editing to remove write0 fsm 
                         next_state <= WAIT_1US;  -- Transition back to waitstate state
                     else 
-                        next_state <= Write_0;  -- stay here until receive feedback
+                        next_state <= WRITE_0;  -- stay here until receive feedback
                     end if; 
             when WRITE_1 =>
-                if(done_writing1 = '1') then 
+                if(oneus_flag = '1') then 
                     next_state <= WAIT_P;  -- Transition TO WAITING TO 60US state
                 else 
                     next_state <= Write_1;
@@ -150,17 +150,17 @@ begin
         ONE_WIRE_OUT_W <= '1';
         
 	when WRITE_0 =>
-		write0 <= '1';  -- Set write0 signal
+		write0 <= '0';  -- Set write0 signal
         write1 <= '0';  -- Clear write1 signal
         start1us_timer <= '0';
         ONE_WIRE_OUT_W <= '0';
-        start60us_timer <= '0';
+        start60us_timer <= '1';
        
         
 	when WRITE_1 => 
 		write0 <= '0';  -- Set write0 signal
-        write1 <= '1';  -- Clear write1 signal
-        start1us_timer <= '0';
+        write1 <= '0';  -- Clear write1 signal
+        start1us_timer <= '1';
         start60us_timer <= '1';
         ONE_WIRE_OUT_W <= '0';
         
@@ -169,12 +169,13 @@ begin
         write1 <= '0';  -- Clear write1 signal
         start1us_timer <= '0';
         ONE_WIRE_OUT_W <= '1';
+         start60us_timer <= '1';
 	when DONE_S =>
 		done <= '1'; 
         start1us_timer <= '0';
         write0 <= '0'; 
         write1 <= '0';
-        ONE_WIRE_OUT_W <= '1';
+        ONE_WIRE_OUT_W  <= '1';
         start60us_timer <= '0';
     when others =>
         bit_index <= 0; -- Reset bit index
@@ -185,4 +186,6 @@ begin
         ONE_WIRE_OUT_W <= '1'; 
    end case;
 end process; 
+
+
 end Behavioral;

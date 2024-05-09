@@ -41,11 +41,13 @@ entity Read1bit is
         timer_15us_done : in std_logic;
         timer_1us_done : in std_logic;
         timer_60us_done : in std_logic;
+        pulldown_out: out std_logic;
         en_timer_1us: out std_logic;
         en_timer_15us: out std_logic;
         en_timer_60us: out std_logic;
         write_bit : out std_logic;
-        write_mem : out std_logic       
+        write_mem : out std_logic;
+        done_reading : out std_logic        
     );
     end Read1bit;
     
@@ -55,12 +57,12 @@ architecture Behavioral of Read1bit is
     type state_type is (
         IDLE, 
         PULLDOWN,
-        START_R,
         WAIT_15US, 
         READ_LINE,
         OUT_0,
         OUT_1,
         WAIT_SLOT,
+        WAIT_SLOT2,
         DONE_R
     );
     
@@ -82,7 +84,7 @@ begin
     end process;
 
 
-    process(current_state,clk)
+    process(current_state,clk,rst)
     begin
         case current_state is
             when IDLE =>
@@ -95,7 +97,7 @@ begin
                 end if;
 
             when PULLDOWN => 
-                if count_8bit < 7 then
+                if count_8bit < 8 then
                 
                     if(timer_1us_done = '1') then 
                         next_state <= WAIT_15US;
@@ -103,7 +105,7 @@ begin
                         next_state <= PULLDOWN;
                     end if;
                 else
-                    next_state <= IDLE;
+                    next_state <= DONE_R;
                end if;
                
             when WAIT_15US => 
@@ -120,14 +122,21 @@ begin
                     next_state <= OUT_1;
                 end if;
              when OUT_0 => 
+             
                 next_state <= WAIT_SLOT;
              when OUT_1 => 
                 next_state <= WAIT_SLOT;
              when WAIT_SLOT => 
                 if(timer_60us_done = '1') then
-                    next_state <= PULLDOWN;
+                    next_state <= WAIT_SLOT2;
                 else 
                     next_state <= WAIT_SLOT;
+                end if;
+                when WAIT_SLOT2 => 
+                if(timer_1us_done = '1') then
+                    next_state <= PULLDOWN;
+                else 
+                    next_state <= WAIT_SLOT2;
                 end if;
              when DONE_R =>
                     next_state <= IDLE;           
@@ -147,56 +156,75 @@ begin
             en_timer_60us   <='0';
             write_bit       <='0'; 
             write_mem       <='0';
+            pulldown_out <='1';
             count_8bit <= 0;
+            done_reading <= '0';
             
 	   when PULLDOWN =>
 		    en_timer_1us    <='1';
             en_timer_15us   <='0';
-            en_timer_60us   <='0';
+            en_timer_60us   <='1';
             write_bit       <='0';
-            write_mem       <='0'; 
+            write_mem       <='0';
+            pulldown_out    <='0';
+            done_reading <= '0';
+            
 
-        when START_R =>
-            en_timer_1us    <='0';
-            en_timer_15us   <='0';
-            en_timer_60us   <='0';
-            write_bit       <='0';
-            write_mem       <='0'; 
 
 	    when WAIT_15US => 
             en_timer_1us    <='0';
-            en_timer_15us   <='0';
-            en_timer_60us   <='0';
+            en_timer_15us   <='1';
+            en_timer_60us   <='1';
             write_bit       <='0'; 
             write_mem       <='0';
+            pulldown_out    <='1';
+            done_reading <= '0';
+            
         when READ_LINE =>
             en_timer_1us    <='0';
             en_timer_15us   <='0';
-            en_timer_60us   <='0';
+            en_timer_60us   <='1';
             write_bit       <='0'; 
             write_mem       <='0';
+            pulldown_out    <='1';
+            done_reading <= '0';
+            
         when OUT_0 =>
             en_timer_1us    <='0';
             en_timer_15us   <='0';
-            en_timer_60us   <='0';
+            en_timer_60us   <='1';
             write_bit       <='0';
-            write_mem       <='1'; 
+            write_mem       <='1';
+            pulldown_out    <='1';
+            done_reading <= '0'; 
  
         when OUT_1 =>
             en_timer_1us    <='0';
             en_timer_15us   <='0';
-            en_timer_60us   <='0';
+            en_timer_60us   <='1';
             write_bit       <='1';
-            write_mem       <='1'; 
+            write_mem       <='1';
+            pulldown_out    <='1'; 
+            done_reading <= '0';
 
         when WAIT_SLOT =>
             en_timer_1us    <='0';
             en_timer_15us   <='0';
+            en_timer_60us   <='1';
+            write_bit       <='0';
+            write_mem       <='0';
+            pulldown_out    <='1';
+            done_reading <= '0';
+            
+        when WAIT_SLOT2 =>
+            en_timer_1us    <='1';
+            en_timer_15us   <='0';
             en_timer_60us   <='0';
             write_bit       <='0';
             write_mem       <='0';
+            pulldown_out    <='1';  
             count_8bit      <= count_8bit +1;
-             
+            done_reading <= '0';
  
         when DONE_R => 
             en_timer_1us    <='0';
@@ -204,12 +232,15 @@ begin
             en_timer_60us   <='0';
             write_bit       <='0'; 
             write_mem       <='0';
-        
+            pulldown_out    <='1';
+            done_reading <= '1';
         when others =>
             en_timer_1us    <='0';
             en_timer_15us   <='0';
             en_timer_60us   <='0';
-            write_bit       <='0'; 
+            write_bit       <='0';
+            pulldown_out    <='1'; 
+            done_reading <= '0';
 
    end case;
 end process; 
