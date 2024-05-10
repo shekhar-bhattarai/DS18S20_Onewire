@@ -2,3 +2,6 @@ Running: xsim.dir/tb_master_protocol_behav/xsimk -simmode gui -wdb tb_master_pro
 Design successfully loaded
 Design Loading Memory Usage: 28984 KB (Peak: 29552 KB)
 Design Loading CPU Usage: 170 ms
+Simulation completed
+Simulation Memory Usage: 110720 KB (Peak: 168252 KB)
+Simulation CPU Usage: 210 ms
