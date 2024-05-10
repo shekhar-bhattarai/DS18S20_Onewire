@@ -34,19 +34,20 @@ use IEEE.NUMERIC_STD.ALL;
 
 
 entity Protocol_FSM is
-    Port ( rst          : in STD_LOGIC;
-           clk          : in STD_LOGIC;
-           start        : in STD_LOGIC;
-           finish_init       : in STD_LOGIC;
-           finish_write       : in STD_LOGIC;
-           finish_read       : in STD_LOGIC;
-           start_init   : out STD_LOGIC;
-           start_write  : out STD_LOGIC;
-           start_read   : out std_logic;
-           data         : out STD_LOGIC_VECTOR (7 downto 0);
-           done_p        : out STD_LOGIC;
-           en_timer_800ms : out std_logic;
-           done_timer_800ms: in std_logic
+    Port ( rst              : in STD_LOGIC;
+           clk              : in STD_LOGIC;
+           start            : in STD_LOGIC;
+           Read_line        : in std_logic;
+           finish_init      : in STD_LOGIC;
+           finish_write     : in STD_LOGIC;
+           finish_read      : in STD_LOGIC;
+           start_init       : out STD_LOGIC;
+           start_write      : out STD_LOGIC;
+           start_read       : out std_logic;
+           data             : out STD_LOGIC_VECTOR (7 downto 0);
+           done_p           : out STD_LOGIC;
+           en_timer_800ms   : out std_logic;
+           done_timer_800ms : in std_logic
          );
 end Protocol_FSM;
 
@@ -79,7 +80,7 @@ begin
     end process;
 
     -- Block F of the Moore Machine
-    process(present_state, start, finish_init, finish_read, finish_write,done_timer_800ms)
+    process(present_state, start,Read_line, finish_init, finish_read, finish_write,done_timer_800ms)
         begin
         case present_state is
         
@@ -120,7 +121,9 @@ begin
                         else
                             next_state <= READ_T;
                         end if;   
-        when CONV_T   => if (done_timer_800ms = '1') then
+        when CONV_T   => if (Read_line = '0') then
+                            next_state <= INIT;
+                         elsif (done_timer_800ms = '1') then
                             next_state <= INIT;
                         else
                             next_state <= CONV_T;
@@ -158,7 +161,7 @@ begin
                 start_init       <= '0';
                 start_write      <= '1';
                 start_read       <= '0';
-                data             <= "11001100";
+                data             <= "11001100";       --CCH
                 done_p           <= '0';
                 en_timer_800ms   <= '0';
                 count            <= count;
@@ -166,7 +169,7 @@ begin
                 start_init       <= '0';
                 start_write      <= '1';
                 start_read       <= '0';
-                data             <= "10111110";
+                data             <= "10111110";       --BEH
                 done_p           <= '0';
                 en_timer_800ms   <= '0';
                 count            <= count;
@@ -175,7 +178,7 @@ begin
                 start_init       <= '0';
                 start_write      <= '1';
                 start_read       <= '0';
-                data             <= "01000100";
+                data             <= "01000100";         --44H
                 done_p           <= '0';
                 en_timer_800ms   <= '0';
                 count            <= count;

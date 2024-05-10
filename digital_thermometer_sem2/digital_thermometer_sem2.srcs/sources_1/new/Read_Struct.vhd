@@ -63,8 +63,7 @@ component Read1bit is
         en_timer_1us: out std_logic;
         en_timer_15us: out std_logic;
         en_timer_60us: out std_logic;
-        write_bit : out std_logic;
-        write_mem : out std_logic ;
+        read_val : out std_logic_vector(7 downto 0);
         done_reading : out std_logic      
     );
     end component;
@@ -75,14 +74,12 @@ component Read1bit is
     Port ( 
            clk      : in STD_LOGIC;
            rst      : in STD_LOGIC;
-           mem_wr   : in STD_LOGIC;
-           val      : in STD_LOGIC;
-           Temp     : out STD_LOGIC_VECTOR (7 downto 0);
-           d_read   : in std_logic);
+           T_val      : in STD_LOGIC_VECTOR (7 downto 0);
+           Temp     : out STD_LOGIC_VECTOR (7 downto 0)
+           );
 end component;
     
-    signal sig_write_bit : std_logic;
-    signal sig_val: std_logic;
+    signal sig_val: std_logic_vector(7 downto 0);
     signal sig_d_read: std_logic;
     
 begin
@@ -99,10 +96,9 @@ read8_bitval : read1bit
         en_timer_1us    => en_timer_1us,
         en_timer_15us   => en_timer_15us,
         en_timer_60us   => en_timer_60us,
-        write_bit       => sig_val,
-        write_mem       =>  sig_write_bit,
         pulldown_out => ONE_wire_write,
-        done_reading => sig_d_read
+        done_reading => sig_d_read,
+        read_val => sig_val
         
         );
         
@@ -111,11 +107,8 @@ read8_bitval : read1bit
         port map (
             clk     =>  clk, 
             rst     =>    rst,
-            mem_wr  =>  sig_write_bit,
-            val     => sig_val,
-            Temp    => mem_value,
-            d_read  => sig_d_read
-        
+            T_val     => sig_val,
+            Temp    => mem_value
         );
     
 

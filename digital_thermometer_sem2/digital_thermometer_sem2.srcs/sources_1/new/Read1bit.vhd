@@ -45,8 +45,7 @@ entity Read1bit is
         en_timer_1us: out std_logic;
         en_timer_15us: out std_logic;
         en_timer_60us: out std_logic;
-        write_bit : out std_logic;
-        write_mem : out std_logic;
+        read_val : out std_logic_vector(7 downto 0);
         done_reading : out std_logic        
     );
     end Read1bit;
@@ -69,6 +68,7 @@ architecture Behavioral of Read1bit is
     -- State signal
     signal current_state, next_state : state_type;
      signal count_8bit : integer range 0 to 7 := 0;
+     signal temp_data : std_logic_vector(7 downto 0);
 
 begin
 
@@ -154,8 +154,6 @@ begin
 	        en_timer_1us    <='0';
             en_timer_15us   <='0';
             en_timer_60us   <='0';
-            write_bit       <='0'; 
-            write_mem       <='0';
             pulldown_out <='1';
             count_8bit <= 0;
             done_reading <= '0';
@@ -164,8 +162,7 @@ begin
 		    en_timer_1us    <='1';
             en_timer_15us   <='0';
             en_timer_60us   <='1';
-            write_bit       <='0';
-            write_mem       <='0';
+            count_8bit <= count_8bit;
             pulldown_out    <='0';
             done_reading <= '0';
             
@@ -175,8 +172,7 @@ begin
             en_timer_1us    <='0';
             en_timer_15us   <='1';
             en_timer_60us   <='1';
-            write_bit       <='0'; 
-            write_mem       <='0';
+            count_8bit <= count_8bit;
             pulldown_out    <='1';
             done_reading <= '0';
             
@@ -184,8 +180,7 @@ begin
             en_timer_1us    <='0';
             en_timer_15us   <='0';
             en_timer_60us   <='1';
-            write_bit       <='0'; 
-            write_mem       <='0';
+            count_8bit <= count_8bit;
             pulldown_out    <='1';
             done_reading <= '0';
             
@@ -193,8 +188,8 @@ begin
             en_timer_1us    <='0';
             en_timer_15us   <='0';
             en_timer_60us   <='1';
-            write_bit       <='0';
-            write_mem       <='1';
+            temp_data(count_8bit) <= '0';
+           count_8bit <= count_8bit;
             pulldown_out    <='1';
             done_reading <= '0'; 
  
@@ -202,8 +197,8 @@ begin
             en_timer_1us    <='0';
             en_timer_15us   <='0';
             en_timer_60us   <='1';
-            write_bit       <='1';
-            write_mem       <='1';
+            temp_data(count_8bit) <= '1';
+           count_8bit <= count_8bit;
             pulldown_out    <='1'; 
             done_reading <= '0';
 
@@ -211,8 +206,7 @@ begin
             en_timer_1us    <='0';
             en_timer_15us   <='0';
             en_timer_60us   <='1';
-            write_bit       <='0';
-            write_mem       <='0';
+            count_8bit <= count_8bit;
             pulldown_out    <='1';
             done_reading <= '0';
             
@@ -220,8 +214,7 @@ begin
             en_timer_1us    <='1';
             en_timer_15us   <='0';
             en_timer_60us   <='0';
-            write_bit       <='0';
-            write_mem       <='0';
+            
             pulldown_out    <='1';  
             count_8bit      <= count_8bit +1;
             done_reading <= '0';
@@ -230,15 +223,15 @@ begin
             en_timer_1us    <='0';
             en_timer_15us   <='0';
             en_timer_60us   <='0';
-            write_bit       <='0'; 
-            write_mem       <='0';
+            count_8bit      <= 0;
+            read_val        <= temp_data;
             pulldown_out    <='1';
             done_reading <= '1';
         when others =>
             en_timer_1us    <='0';
             en_timer_15us   <='0';
             en_timer_60us   <='0';
-            write_bit       <='0';
+            count_8bit <= 0;
             pulldown_out    <='1'; 
             done_reading <= '0';
 

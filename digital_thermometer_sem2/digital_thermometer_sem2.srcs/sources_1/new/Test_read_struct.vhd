@@ -87,7 +87,9 @@ component Timers is
     start_timer_15us  : in std_logic;
     done_timer_15us   : out std_logic;
      start_timer_800ms  : in std_logic;
-    done_timer_800ms    : out std_logic
+    done_timer_800ms    : out std_logic;
+    start_timer_480us  : in std_logic;
+    done_timer_480us    : out std_logic
     
   
   );
@@ -97,9 +99,11 @@ end component;
    signal sig_timer_1us_done :  std_logic;
    signal sig_timer_60us_done :  std_logic;
    signal sig_timer_800ms_done :  std_logic;
+    signal sig_timer_480us_done :  std_logic;
    signal sig_en_timer_1us:  std_logic;
    signal sig_en_timer_15us: std_logic;
    signal sig_en_timer_60us: std_logic;
+    signal sig_en_timer_480us: std_logic;
    signal sig_en_timer_800ms: std_logic;
    signal sig_write_bit: std_logic;
 begin
@@ -130,7 +134,10 @@ Timer_control: Timers
     start_timer_15us => sig_en_timer_15us,
     done_timer_15us  => sig_timer_15us_done,
     start_timer_800ms => sig_en_timer_800ms,
-    done_timer_800ms  => sig_timer_800ms_done
+    done_timer_800ms  => sig_timer_800ms_done,
+    start_timer_480us => sig_en_timer_480us,
+    done_timer_480us  => sig_timer_480us_done
+    
     );
 end structural;
 ----------------------------------------------------------------------------

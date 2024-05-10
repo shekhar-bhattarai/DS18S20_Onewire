@@ -32,16 +32,16 @@ use IEEE.NUMERIC_STD.ALL;
 --use UNISIM.VComponents.all;
 ----------------------------------------------------------------------------------
 
-entity Timer_800ms is
+entity Timer_480us is
     Port ( rst : in STD_LOGIC;
            clk : in STD_LOGIC;
-           timer800_start : in STD_LOGIC;
-           timer800_done : out STD_LOGIC);
-end Timer_800ms;
+           timer480_start : in STD_LOGIC;
+           timer480_done : out STD_LOGIC);
+end Timer_480us;
 
-architecture Behavioral of Timer_800ms is
+architecture Behavioral of Timer_480us is
 
-signal count: integer range 0 to 80000000;
+signal count: integer range 0 to 48000;
 
 begin
 
@@ -51,19 +51,19 @@ begin
 
   if rst='1' then
       count<=0;
-      timer800_done<='0';
+      timer480_done<='0';
       
  elsif rising_edge(clk) then 
 	     
-	    if (timer800_start ='1') then
+	    if (timer480_start ='1') then
             count <= count + 1;
-            timer800_done <='0';   --master drives the line to 0& count <48000
-            if count = 80000000 then 
-                timer800_done <='1';
+            timer480_done <='0';   --master drives the line to 0& count <48000
+            if count = 48000 then 
+                timer480_done <='1';
                 count<=0;
             end if;
          else
-         timer800_done <='0';
+         timer480_done <='0';
          
          end if;
          

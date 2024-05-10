@@ -66,6 +66,8 @@ signal sig_finish_read:std_logic;
 
 signal sig_start_reading:std_logic;
 signal sig_en_timer_1us:std_logic;
+signal sig_en_timer_1us_init:std_logic;
+signal sig_en_timer_60us_init:std_logic;
 signal sig_en_timer_1us_write:std_logic;     --timer signals
 signal sig_en_timer_1us_read:std_logic;
 signal sig_en_timer_15us:std_logic;
@@ -73,16 +75,19 @@ signal sig_en_timer_60us:std_logic;
 signal sig_en_timer_60us_write:std_logic;
 signal sig_en_timer_60us_read:std_logic;
 signal sig_en_timer_800ms:std_logic;
+signal sig_en_timer_480us:std_logic;
 signal sig_timer_1us_done:std_logic;
 signal sig_timer_60us_done:std_logic;
 signal sig_timer_15us_done:std_logic;
 signal sig_done_timer800ms:std_logic;
+signal sig_timer_480us_done:std_logic;
 
 
 component Protocol_FSM is
     Port ( rst              : in STD_LOGIC;
            clk              : in STD_LOGIC;
            start            : in STD_LOGIC;
+           Read_line        : in std_logic;
            finish_init      : in STD_LOGIC;
            finish_write     : in STD_LOGIC;
            finish_read      : in STD_LOGIC;
@@ -95,17 +100,17 @@ component Protocol_FSM is
            done_timer_800ms : in std_logic
          );
 end component;
-<<<<<<< HEAD
 
-component Initial is
-    Port (  clk              : in STD_LOGIC;
-           rst               : in STD_LOGIC;
-           start             : in STD_LOGIC;
-           ONE_WIRE_IN_REAL  : in STD_LOGIC;  
-           ONE_WIRE_OUT_REAL : out STD_LOGIC;
-           sens_detect       : out std_logic;
-           done_init         : out std_logic
-=======
+
+--component Initial is
+--    Port (  clk              : in STD_LOGIC;
+--           rst               : in STD_LOGIC;
+--           start             : in STD_LOGIC;
+--           ONE_WIRE_IN_REAL  : in STD_LOGIC;  
+--           ONE_WIRE_OUT_REAL : out STD_LOGIC;
+--           sens_detect       : out std_logic;
+--           done_init         : out std_logic
+
 ----------------------INIT-----------------------------
 component Initialization is
     Port ( clk : in STD_LOGIC;
@@ -122,7 +127,7 @@ component Initialization is
            sens_detect: out std_logic;
            done_init : out std_logic  -- finish initialization 
             
->>>>>>> 53d3410 (timer)
+
              );
 end component;
 
@@ -176,10 +181,21 @@ component Timers is
     start_timer_15us  : in std_logic;
     done_timer_15us   : out std_logic;
     start_timer_800ms  : in std_logic;
-    done_timer_800ms    : out std_logic
+    done_timer_800ms    : out std_logic;
+    start_timer_480us  : in std_logic;
+    done_timer_480us    : out std_logic
     
   );
   
+end component;
+component sync_input is
+   Port (
+         async_one_wire_in :in std_logic;
+         clk : in std_logic;
+         sync_one_wire_in:out std_logic;
+         rst: in std_logic);
+         
+   
 end component;
 
 component TriState_buffer is
@@ -190,8 +206,8 @@ component TriState_buffer is
  end component;
 
 begin
-sig_en_timer_1us <= sig_en_timer_1us_write or sig_en_timer_1us_read;
-sig_en_timer_60us <= sig_en_timer_60us_write or sig_en_timer_60us_read;
+sig_en_timer_1us <= sig_en_timer_1us_init or sig_en_timer_1us_write or sig_en_timer_1us_read;
+sig_en_timer_60us <= sig_en_timer_60us_init or sig_en_timer_60us_write or sig_en_timer_60us_read;
 write_done <= sig_finish_write;
 sens_detect <= sig_finish_init;
 ---------------------------for one wire in and out -------------------------------
@@ -204,6 +220,7 @@ protocolfsm: Protocol_FSM
         rst=> rst,
         clk => clk,
         start=> start,
+        Read_line => sig_one_wire_in,
         start_init => sig_Start_init,
         start_write => sig_Start_write,
         start_read => sig_start_reading,
@@ -216,10 +233,9 @@ protocolfsm: Protocol_FSM
         
         
     );
-<<<<<<< HEAD
-=======
-    init:Initialization
-port map ( 
+
+init:Initialization
+    port map ( 
            clk=> clk,
            rst => rst,
            start=>sig_Start_init,
@@ -237,17 +253,17 @@ port map (
            ); 
            
            --------------- init with its own timer block-----------------------------
->>>>>>> 53d3410 (timer)
 
-initmap: Initial
-  port map( rst               => rst,
-            clk               => clk,
-            start             => sig_Start_init,
-            ONE_WIRE_IN_REAL  => sig_ONE_WIRE_IN,
-            ONE_WIRE_OUT_REAL => sig_one_wire_out_init,
-            sens_detect       => sig_finish_init,
-            done_init         => sens_detect
-            );
+
+--initmap: Initial
+--  port map( rst               => rst,
+--            clk               => clk,
+--            start             => sig_Start_init,
+--            ONE_WIRE_IN_REAL  => sig_ONE_WIRE_IN,
+--            ONE_WIRE_OUT_REAL => sig_one_wire_out_init,
+--            sens_detect       => sig_finish_init,
+--            done_init         => sens_detect
+--            );
             
 Write8bmap: Write8bit
   port map( rst             => rst,
@@ -283,18 +299,29 @@ read8_bitval : Read_Struct
         
 Timer_control: Timers
     port map (
-                clk  =>  clk,   
-                rst  =>  rst,
-    start_timer_1us  => sig_en_timer_1us,
-    start_timer_60us => sig_en_timer_60us,
-    done_timer_1us   => sig_timer_1us_done,
-    done_timer_60us  => sig_timer_60us_done,
-    start_timer_15us => sig_en_timer_15us,
-    done_timer_15us  => sig_timer_15us_done,
-    start_timer_800ms => sig_en_timer_800ms,
-    done_timer_800ms => sig_done_timer800ms
+                clk    =>  clk,   
+                rst    =>  rst,
+    start_timer_1us    => sig_en_timer_1us,
+    start_timer_60us   => sig_en_timer_60us,
+    done_timer_1us     => sig_timer_1us_done,
+    done_timer_60us    => sig_timer_60us_done,
+    start_timer_15us   => sig_en_timer_15us,
+    done_timer_15us    => sig_timer_15us_done,
+    start_timer_800ms  => sig_en_timer_800ms,
+    done_timer_800ms   => sig_done_timer800ms,
+    start_timer_480us  => sig_en_timer_480us,
+    done_timer_480us   => sig_timer_480us_done
+        
     
     );
+--    sync_ip : sync_input
+--    port map(
+--    clk => clk,
+--    rst=> rst,
+--    Async_one_wire_in =>  ONE_WIRE_IN_REAL,
+--    sync_one_wire_in     => sig_one_wire_in
+--    );
+    
     tristate_buff: TriState_buffer 
     port map (
    ONE_WIRE_IN => sig_ONE_WIRE_OUT_final,

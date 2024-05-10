@@ -27,40 +27,35 @@ entity Temp_Memory is
     Port ( 
            clk      : in STD_LOGIC;
            rst      : in STD_LOGIC;
-           mem_wr   : in STD_LOGIC;
-           val      : in STD_LOGIC;
-           Temp     : out STD_LOGIC_VECTOR (7 downto 0);
-           d_read   : in std_logic
+           T_val      : in STD_LOGIC_vector (7 downto 0);
+           Temp     : out STD_LOGIC_VECTOR (7 downto 0)
            );
 end Temp_Memory;
 
 architecture Behavioral of Temp_Memory is
 
-    signal mem_val: std_logic_vector(7 downto 0);
-    signal count_data : integer range 0 to 10;
+    signal count : integer range 0 to 100000000;
     
     begin
     
         process(rst, clk)
         begin
              if rst='1' then
-                count_data<=0;
-                mem_val <= "00000000";
+                count <=0;
                 Temp <= "00000000";
       
  elsif rising_edge(clk) then 
-	     
-	    if (mem_wr ='1') then
-            count_data <= count_data + 1;
-            mem_val(count_data) <=val;
-            if count_data = 7 then 
-                count_data<=0;
+           
+            if count = 100000000 then 
+                Temp <= T_val;
+                count <= 0;
+            else 
+               count <= count + 1; 
             end if;
          
-         end if;
-         
-     end if;    
-           Temp <= mem_val;      
+  end if;
+            
+                
         end process;
         
 end Behavioral;

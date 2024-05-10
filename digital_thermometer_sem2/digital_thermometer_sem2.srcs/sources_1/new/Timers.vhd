@@ -42,7 +42,9 @@ entity Timers is
     start_timer_15us  : in std_logic;
     done_timer_15us   : out std_logic;
     start_timer_800ms  : in std_logic;
-    done_timer_800ms    : out std_logic
+    done_timer_800ms    : out std_logic;
+    start_timer_480us  : in std_logic;
+    done_timer_480us    : out std_logic
   
   );
   
@@ -78,6 +80,16 @@ component Timer_15us is
         timer15_done : out STD_LOGIC
         );
 end component;
+component Timer_480us is
+    
+    Port (
+        rst             : in STD_LOGIC;
+        clk             : in STD_LOGIC;
+        timer480_start    : in STD_LOGIC;
+        timer480_done     : out STD_LOGIC
+        );
+ end component;
+
 
 component Timer_800ms is
     
@@ -114,6 +126,14 @@ sixtyus_timer: Timer_60us
     rst           => rst,
     timer60_start => start_timer_60us,
     timer60_done  => done_timer_60us
+    
+    );
+fourEighty_ms_timer: Timer_480us 
+    port map (
+    clk           => clk,
+    rst           => rst,
+    timer480_start => start_timer_480us,
+    timer480_done  => done_timer_480us
     
     );
     eighthundred_ms_timer: Timer_800ms 
