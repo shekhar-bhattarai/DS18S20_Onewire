@@ -1,6 +1,10 @@
 
 { 
+<<<<<<< HEAD
     crc :  9101676364488541734  , 
+=======
+    crc :  12722878331023028600  , 
+>>>>>>> 53d3410 (timer)
     ccp_crc :  0  , 
     cmdline : " --incr --debug typical --relax --mt 8 -L xil_defaultlib -L secureip --snapshot tb_master_protocol_behav xil_defaultlib.tb_master_protocol" , 
     buildDate : "Apr 18 2022" , 

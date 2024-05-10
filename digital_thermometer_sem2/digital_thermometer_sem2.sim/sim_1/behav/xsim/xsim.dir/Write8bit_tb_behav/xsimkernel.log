@@ -1,7 +1,0 @@
-Running: xsim.dir/Write8bit_tb_behav/xsimk -simmode gui -wdb Write8bit_tb_behav.wdb -simrunnum 0 -socket 45585
-Design successfully loaded
-Design Loading Memory Usage: 28944 KB (Peak: 29540 KB)
-Design Loading CPU Usage: 60 ms
-Simulation completed
-Simulation Memory Usage: 111640 KB (Peak: 168212 KB)
-Simulation CPU Usage: 18460 ms

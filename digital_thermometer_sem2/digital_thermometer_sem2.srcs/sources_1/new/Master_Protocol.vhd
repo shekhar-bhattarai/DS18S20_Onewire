@@ -95,6 +95,7 @@ component Protocol_FSM is
            done_timer_800ms : in std_logic
          );
 end component;
+<<<<<<< HEAD
 
 component Initial is
     Port (  clk              : in STD_LOGIC;
@@ -104,6 +105,24 @@ component Initial is
            ONE_WIRE_OUT_REAL : out STD_LOGIC;
            sens_detect       : out std_logic;
            done_init         : out std_logic
+=======
+----------------------INIT-----------------------------
+component Initialization is
+    Port ( clk : in STD_LOGIC;
+           rst : in STD_LOGIC;
+           start : in STD_LOGIC;
+           time_out480 : in STD_LOGIC;
+           time_out60 : in STD_LOGIC;
+           time_out1 : in STD_LOGIC;
+           ONE_WIRE_IN : in STD_LOGIC;
+           ONE_WIRE_OUT : out STD_LOGIC;
+           en_timer480: out STD_LOGIC;
+           en_timer60: out STD_LOGIC;
+           en_timer1: out STD_LOGIC;
+           sens_detect: out std_logic;
+           done_init : out std_logic  -- finish initialization 
+            
+>>>>>>> 53d3410 (timer)
              );
 end component;
 
@@ -197,6 +216,28 @@ protocolfsm: Protocol_FSM
         
         
     );
+<<<<<<< HEAD
+=======
+    init:Initialization
+port map ( 
+           clk=> clk,
+           rst => rst,
+           start=>sig_Start_init,
+           time_out1=>sig_timer_1us_done,
+           time_out60=>sig_timer_60us_done,
+           time_out480=>sig_timer_480us_done,
+           ONE_WIRE_OUT=>sig_one_wire_out_init,
+           ONE_WIRE_IN=>sig_ONE_WIRE_IN, 
+           en_timer1=>sig_en_timer_1us_init,
+           en_timer60=>sig_en_timer_60us_init,
+           en_timer480=>sig_en_timer_480us,
+           sens_detect=>sig_finish_init,
+           done_init => sens_detect
+           
+           ); 
+           
+           --------------- init with its own timer block-----------------------------
+>>>>>>> 53d3410 (timer)
 
 initmap: Initial
   port map( rst               => rst,

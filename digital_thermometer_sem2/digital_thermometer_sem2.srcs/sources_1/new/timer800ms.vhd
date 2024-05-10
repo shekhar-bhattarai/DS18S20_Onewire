@@ -41,7 +41,7 @@ end Timer_800ms;
 
 architecture Behavioral of Timer_800ms is
 
-signal count: integer range 0 to 80000;
+signal count: integer range 0 to 800000;
 
 begin
 

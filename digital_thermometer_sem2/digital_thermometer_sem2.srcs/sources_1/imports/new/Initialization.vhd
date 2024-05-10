@@ -37,11 +37,12 @@ entity Initialization is
            start : in STD_LOGIC;
            time_out480 : in STD_LOGIC;
            time_out60 : in STD_LOGIC;
+           time_out1 : in STD_LOGIC;
            ONE_WIRE_IN : in STD_LOGIC;
            ONE_WIRE_OUT : out STD_LOGIC;
            en_timer480: out STD_LOGIC;
            en_timer60: out STD_LOGIC;
-           
+           en_timer1: out STD_LOGIC;
            sens_detect: out std_logic;
            done_init : out std_logic
            
@@ -63,7 +64,7 @@ begin
     end if;
 end process block_F;
 
-block_M: process(pstate,clk,start,time_out480,time_out60,one_wire_in)      --enter only i/p 
+block_M: process(pstate,clk,start,time_out480,time_out60,time_out1,one_wire_in)      --enter only i/p 
 begin
    case(pstate) is
         when INIT => 
@@ -80,7 +81,7 @@ begin
               end if;
                   
          when Wait_rx =>
-              if (time_out60='1') then
+              if (time_out1='1') then
                  nstate<=Master_Rx;
                else
                 nstate<= Wait_rx;
@@ -135,21 +136,24 @@ end process;
                             ONE_WIRE_OUT    <='1';
                              en_timer480    <='0';  --480timer--enable timer count for 480micsecs
                              en_timer60     <='0';
+                             en_timer1      <='0';
                              sens_detect    <='0';
                              done_init      <= '0';
                             
                                   
                     when Master_Tx => 
-                                    ONE_WIRE_OUT    <='0';
-                                    en_timer60      <='0';  --480timer--enable timer count for 480micsecs
-                                    en_timer480     <='1';
-                                     sens_detect    <='0';
-                                    done_init       <='0';
+                                    ONE_WIRE_OUT   <='0';
+                                    en_timer1      <='0';
+                                    en_timer60     <='0';  --480timer--enable timer count for 480micsecs
+                                    en_timer480    <='1';
+                                     sens_detect   <='0';
+                                    done_init      <='0';
                        -- from here to the end of the process is 480 us              
                     when Wait_rx => 
                                   ONE_WIRE_OUT  <='1';
                                   en_timer480   <='1';
-                                  en_timer60    <='1';
+                                  en_timer60    <='0';
+                                  en_timer1     <='1';
                                   sens_detect   <='0';
                                   done_init     <= '0';
                                   
@@ -159,12 +163,12 @@ end process;
                                   en_timer60    <='0';  
                                   sens_detect   <='0'; 
                                   done_init     <= '0';
-                                  en_timer480     <='1';
-                                           
+                                  en_timer480   <='1';
+                                  en_timer1     <='0';         
                      when Slave_Tx => 
                                   ONE_WIRE_OUT  <='1';
                                   en_timer60    <='1';  --count to 60is enabled
-                                  
+                                  en_timer1     <='0';
                                   sens_detect   <='0';
                                   done_init     <= '0';
                       when Slave_Pr => 
@@ -172,14 +176,15 @@ end process;
                                   en_timer60    <='0';  --count to 60is enabled
                                   sens_detect   <='1';
                                   done_init     <='1';
+                                  en_timer1     <='0';
                       
                       when others =>  
-                                 ONE_WIRE_OUT<='1';
-                                 en_timer480 <='0'; 
-                                 en_timer60 <='0';
-                                 sens_detect <='0';
-                                 done_init <= '0';
-                                 
+                                 ONE_WIRE_OUT   <='1';
+                                 en_timer480    <='0'; 
+                                 en_timer60     <='0';
+                                 sens_detect    <='0';
+                                 done_init      <= '0';
+                                 en_timer1      <='0';
                     
                     end case;
                      

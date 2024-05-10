@@ -1,1 +1,0 @@
---incr --debug "typical" --relax --mt "8" -L "xil_defaultlib" -L "secureip" --snapshot "Write8bit_tb_behav" "xil_defaultlib.Write8bit_tb" -log "elaborate.log" 
